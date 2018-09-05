@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+<script type="text/javascript" >
+
+function init()
+{
+//    test();
+
+}
+
+function test()
+{
+
+  var o = document.getElementById( "sel1" );
+  alert( o.options.selectedIndex );
+//  alert( o.options.item(0).value );
+  alert( o.options[0].value );
+
+}
+
+
+
+</script>
+</head>
+<body onload="init();" >
+
+<form name="form1" method="post"  onsubmit="return test()"  >
+  <select id="sel1" >
+    <option value="type1" >Type1</option>
+    <option value="type2" >Type2</option>
+    <option value="type3" >Type3</option>
+  </select>
+  <button onclick="test();" >test...</button>
+  <input type="submit" value="Send">
+</form>
+</div>
+</body>
+</html>

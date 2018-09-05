@@ -1,0 +1,101 @@
+﻿<!DOCTYPE html>
+<html>
+  <head>
+    <title>Simple Map</title>
+    <meta name="viewport" content="initial-scale=1.0">
+    <meta charset="utf-8">
+    <style>
+      /* Always set the map height explicitly to define the size of the div
+       * element that contains the map. */
+      #map {
+        height: 100%;
+      }
+      /* Optional: Makes the sample page fill the window. */
+      html, body {
+        height: 100%;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyBamt3la3Nzmi4skYuHztr4c00TWSqhCwA" ></script>
+    <script type="text/javascript" >
+      window.onload = init;
+
+  
+    function init() {
+
+      var map = new google.maps.Map(document.getElementById('map'), {
+//          center: {lat: -34.397, lng: 150.644},
+          center: {lat: 35.686, lng: 139.523},
+          zoom: 15
+        });
+
+       marker( map );
+    }
+
+    function marker( map ) {
+/*
+      var marker1 = new google.maps.Marker();
+
+      var latlng = new google.maps.LatLng(35.686,139.523);
+      var marker2 = new google.maps.Marker({ position: latlng, map:map });
+      google.maps.event.addListener( marker2, "click", function() {
+        var infowindow = new google.maps.InfoWindow( { content:"<img src='/images/maki_20170423.JPG' width='50%' >" });
+        infowindow.open( map, marker2 );
+      });
+*/
+      var imagelst = getImageFileList();
+      if ( imagelst != null ) addMarkers( map, imagelst );
+
+
+    }
+
+    function addMarkers( map, photos ) {
+      for ( var key in photos ) {
+        var marker1 = new google.maps.Marker();
+        var arCoor  = photos[ key ].split( ":" )[1].split( " " );
+        var html    = "<img src='" + photos[ key ].split(":")[0] + "' width='70%' ><div>"  + photos[ key ].split(":")[0] + "</div>";
+
+        addMarkerHelper( map, parseFloat( arCoor[0] ), parseFloat( arCoor[1] ), html );
+//        var latlng = new google.maps.LatLng( parseFloat( arCoor[0] ), parseFloat( arCoor[1] ) );
+//        var marker2 = new google.maps.Marker({ position: latlng, map:map });
+//        google.maps.event.addListener( marker2, "click", function() {
+//          var infowindow = new google.maps.InfoWindow( { content:html });
+//          infowindow.open( map, marker2 );
+//        });
+      }
+    }
+
+    function addMarkerHelper(map, lati, longi, html ) {
+
+      var latlng = new google.maps.LatLng( lati, longi );
+      var marker = new google.maps.Marker({ position: latlng, map:map });
+      google.maps.event.addListener( marker, "click", function() {
+        var infowindow = new google.maps.InfoWindow( { content:html });
+        infowindow.open( map, marker );
+      });
+
+    }
+
+    function getImageFileList() {
+
+      var xmlhttp = new XMLHttpRequest();
+      try {
+        xmlhttp.open("GET", "cgi/filelist.ashx", false);
+        xmlhttp.send();
+        switch ( xmlhttp.status ) {
+          case 200:
+            return xmlhttp.responseText.split( "," );
+            break;
+        }
+
+      } catch ( e ) { alert( e ); }
+      return null;
+    }
+
+  </script>
+  </head>
+  <body>
+    <div id="map"></div>
+  </body>
+</html>

@@ -1,0 +1,20 @@
+{
+  "name": "macawmap",
+  "version": "1.0.0",
+  "description": "Macaw map by Google Map",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/opaquemove/macawmap.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/opaquemove/macawmap/issues"
+  },
+  "homepage": "https://github.com/opaquemove/macawmap#readme"
+}

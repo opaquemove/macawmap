@@ -1,0 +1,197 @@
+<html>
+<head>
+<script type="text/javascript" src="menu.js" ></script>
+<script type="text/javascript" >
+
+function Macaw() {};
+
+Macaw.prototype = {
+  pageX:null,
+  pageY:null,
+  fMouseDown:false
+
+};
+
+var mac = new Macaw();
+var browser = getBrowser();
+var menu = new Menu();
+menu.init( 'menu' );
+
+function init()
+{
+
+    menu.show();
+    var imagelst = getImageFileList();
+    if ( imagelst != null ) addImages( imagelst );
+
+//    var obj = document.getElementById( 'maki' );
+//    obj.addEventListener( 'click', showInfo );
+//    obj.addEventListener( 'mousedown', move );
+//    obj.addEventListener( 'mouseup',   move );
+//    obj.addEventListener( 'mousemove', move );
+
+    switch ( browser ) {
+      case 'firefox':
+      case 'chrome':
+           document.addEventListener( 'mousedown', move );
+           document.addEventListener( 'mouseup',   move );
+           document.addEventListener( 'mousemove', move );
+           break;
+      default:
+          document.attachEvent( 'onmousedown', move );
+          document.attachEvent( 'onmouseup',   move );
+          document.attachEvent( 'onmousemove', move );
+           break;
+    }
+
+//    document.addEventListener( 'click', showInfo, false );
+}
+
+function addImages( photos )
+{
+//var photos = { maki:"/images/maki_20170423.jpg", maya:"/images/maya20170702.jpg", maya2:"/images/maya20170320.jpg" };
+
+    for ( var key in photos ) {
+      var o = document.createElement( "img" );
+
+      o.style.position = 'absolute';
+      o.style.top      = 20;
+      o.style.left     = 0;
+      o.style.width    = '800px';
+      o.src            = photos[ key ].split( ":" )[0];
+      document.getElementById( 'canvas' ).appendChild( o );
+
+    }
+/*
+    var xmlhttp = null;
+    if ( window.ActiveXObject )
+	   xmlhttp = new ActiveXObject( "Microsoft.XMLHTTP" );
+      else xmlhttp = new XMLHttpRequest();
+
+    xmlhttp.open( 'GET', 'imagelist.xml', false );
+    xmlhttp.send( null );
+
+    switch ( xmlhttp.status ) {
+      case 200:
+         //  alert( xmlhttp.responseText );
+           break;
+    }
+*/
+}
+
+function showInfo( e )
+{
+    window.alert( e.type );
+    window.alert( 'id:' + e.target.id );
+}
+
+var maki = null;
+var fMouseDown = false;
+var pageX = null;
+var pageY = null;
+
+function move( e )
+{
+var o = e.target;
+
+    switch ( e.type.toLowerCase() )
+    {
+      case 'mousedown':
+           if ( e.target.tagName == 'IMG' ) {
+             maki  = e.target;
+             pageX = e.pageX  - parseInt( maki.offsetLeft );
+             pageY = e.pageY  - parseInt( maki.offsetTop );
+             maki.style.zIndex = 100;
+             fMouseDown = true;
+           }
+           document.getElementById( 'debug' ).innerHTML = e.type + ":" + e.pageX + "," + e.pageY + fMouseDown;
+
+           switch ( browser ) {
+             case 'firefox':
+             case 'chrome':
+                  e.preventDefault();
+                  break;
+             default:
+                  e.returnValue = false;
+                  break;
+           }
+
+           break;
+      case 'mouseup':
+           if ( maki ) {
+             maki.style.cursor  = '';
+             maki.style.opacity = '';
+             maki.style.zIndex  = '';
+           }
+           fMouseDown = false;
+           maki  = null;
+           pageX = null;
+           pageY = null;
+           document.getElementById( 'debug' ).innerHTML = e.type + ":" + e.pageX + "," + e.pageY + fMouseDown;
+           break;
+      case 'mousemove':
+           if ( fMouseDown ) {
+             maki.style.cursor  = 'move';
+             maki.style.opacity = 0.5;
+             maki.style.top     = ( e.pageY - pageY );
+             maki.style.left    = ( e.pageX - pageX );
+           }
+           var txt;
+           txt = e.type + ":" + e.pageX + "," + e.pageY + fMouseDown;
+           if ( maki != null ) txt += " " + pageX + "," + pageY;
+           document.getElementById( 'debug' ).innerHTML = txt;
+
+           switch ( browser ) {
+             case 'firefox':
+             case 'chrome':
+                  e.preventDefault();
+                  break;
+             default:
+                  e.returnValue = false;
+                  break;
+           }
+
+           break;
+    }
+
+}
+
+function getBrowser() {
+ 
+  var ua = navigator.userAgent;
+  var result = 'unknown';
+ 
+  if ( ua.indexOf('Edge') !== -1 ) {
+    result = 'edge';
+  } else if ( ua.indexOf('Chrome') !== -1 ) {
+    result = 'chrome';
+  } else if ( ua.indexOf('Safari') !== -1 ) {
+    result = 'safari';
+  }
+ 
+  if ( ua.indexOf('Firefox') !== -1 ) {
+    result = 'firefox';
+  }
+ 
+  if ( ua.indexOf('MSIE 8') !== -1 ) {
+    result = 'ie8';
+  } else if ( ua.indexOf('MSIE 9') !== -1 ) {
+    result = 'ie9';
+  } else if ( ua.indexOf('MSIE 10') !== -1 ) {
+    result = 'ie10';
+  } else if ( ua.indexOf('Trident') !== -1 ) {
+    result = 'ie11';
+  }
+ 
+  return result;
+ 
+}
+
+
+</script>
+</head>
+<body id='root' onload="init();" >
+<div id='debug'  style='position:absolute;top:0;left:0;width:800px;height:28px;border:1px solid green;z-index:100;opacity:0.8;' ></div>
+<div id='canvas' style='position:absolute;top:0;left:0;width:100%;height:100%;background-color:#EFEFEF;' ></div>
+</body>
+</html>
